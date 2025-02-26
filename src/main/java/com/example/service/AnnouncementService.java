@@ -1,7 +1,7 @@
 package com.example.service;
 
 import com.example.entity.Announcement;
-import org.springframework.data.domain.Page;
+import java.util.List;
 
 public interface AnnouncementService {
     /**
@@ -9,5 +9,5 @@ public interface AnnouncementService {
      * @param page 页码
      * @return 分页的公告列表
      */
-    Page<Announcement> getActiveAnnouncements(int page);
+    List<Announcement> getActiveAnnouncements(int page);
 } 

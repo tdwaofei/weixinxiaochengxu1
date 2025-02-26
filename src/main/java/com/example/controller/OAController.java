@@ -1,18 +1,16 @@
 package com.example.controller;
 
 import com.example.entity.*;
-import com.example.repository.*;
 import com.example.model.dto.ApplicationDTO;
 import com.example.service.ApplicationService;
 import com.example.service.ApprovalService;
 import com.example.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,10 +22,6 @@ import java.util.Map;
 @CrossOrigin(origins = "*")  // 添加跨域支持
 @RequiredArgsConstructor
 public class OAController {
-    // 使用构造器注入的方式注入所需的Repository
-    private final ApplicationRepository applicationRepository;
-    private final ApprovalRepository approvalRepository;
-    private final AnnouncementRepository announcementRepository;
     private final ApplicationService applicationService;
     private final ApprovalService approvalService;
     private final AnnouncementService announcementService;
@@ -69,14 +63,10 @@ public class OAController {
     public Map<String, Object> getApplications(
             @RequestParam String userId,
             @RequestParam(defaultValue = "1") int page) {
-        // 创建分页请求（每页10条记录）
-        Page<Application> applications = applicationRepository.findByUserIdOrderByCreateTimeDesc(
-                userId, PageRequest.of(page - 1, 10));
-        
-        // 构造返回结果
+        List<ApplicationDTO> applications = applicationService.getUserApplications(userId, page);
         Map<String, Object> result = new HashMap<>();
         result.put("success", true);
-        result.put("data", applications.getContent());
+        result.put("data", applications);
         return result;
     }
 
@@ -87,10 +77,10 @@ public class OAController {
      */
     @GetMapping("/announcements")
     public Map<String, Object> getAnnouncements(@RequestParam(defaultValue = "1") int page) {
-        Page<Announcement> announcements = announcementService.getActiveAnnouncements(page);
+        List<Announcement> announcements = announcementService.getActiveAnnouncements(page);
         Map<String, Object> result = new HashMap<>();
         result.put("success", true);
-        result.put("data", announcements.getContent());
+        result.put("data", announcements);
         return result;
     }
 } 

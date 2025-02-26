@@ -1,7 +1,7 @@
 package com.example.service;
 
 import com.example.model.dto.ApplicationDTO;
-import org.springframework.data.domain.Page;
+import java.util.List;
 
 public interface ApplicationService {
     /**
@@ -12,5 +12,5 @@ public interface ApplicationService {
     /**
      * 查询用户的申请列表
      */
-    Page<ApplicationDTO> getUserApplications(String userId, int page);
+    List<ApplicationDTO> getUserApplications(String userId, int page);
 } 
