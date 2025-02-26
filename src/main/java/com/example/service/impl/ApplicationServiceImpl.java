@@ -1,36 +1,37 @@
 package com.example.service.impl;
 
 import com.example.entity.Application;
+import com.example.mapper.ApplicationMapper;
 import com.example.model.dto.ApplicationDTO;
-import com.example.repository.ApplicationRepository;
 import com.example.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ApplicationServiceImpl implements ApplicationService {
-    private final ApplicationRepository applicationRepository;
+    private final ApplicationMapper applicationMapper;
 
     @Override
     public Long createApplication(ApplicationDTO applicationDTO) {
         Application application = new Application();
         BeanUtils.copyProperties(applicationDTO, application);
-        application = applicationRepository.save(application);
+        applicationMapper.insert(application);
         return application.getId();
     }
 
     @Override
-    public Page<ApplicationDTO> getUserApplications(String userId, int page) {
-        Page<Application> applications = applicationRepository.findByUserIdOrderByCreateTimeDesc(
-                userId, PageRequest.of(page - 1, 10));
-        return applications.map(app -> {
+    public List<ApplicationDTO> getUserApplications(String userId, int page) {
+        int offset = (page - 1) * 10;
+        List<Application> applications = applicationMapper.findByUserId(userId, offset, 10);
+        return applications.stream().map(app -> {
             ApplicationDTO dto = new ApplicationDTO();
             BeanUtils.copyProperties(app, dto);
             return dto;
-        });
+        }).collect(Collectors.toList());
     }
 } 

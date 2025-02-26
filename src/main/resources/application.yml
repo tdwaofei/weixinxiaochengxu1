@@ -10,12 +10,6 @@ spring:
     username: ${MYSQL_USERNAME}  # 使用环境变量
     password: ${MYSQL_PASSWORD}  # 使用环境变量
     driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      # 禁用自动建表
-      ddl-auto: none
-    # 显示SQL语句，方便调试
-    show-sql: true
 
 mybatis:
   # MyBatis映射文件路径
