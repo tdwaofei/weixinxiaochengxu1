@@ -52,22 +52,10 @@ public class OAController {
      * @return 审批结果
      */
     @PostMapping("/approve")
-    @Transactional  // 使用事务确保数据一致性
     public Map<String, Object> approve(@RequestBody Approval approval) {
-        // 查找对应的申请记录
-        Application application = applicationRepository.findById(approval.getApplicationId())
-                .orElseThrow(() -> new RuntimeException("Application not found"));
-        
-        // 更新申请状态
-        application.setStatus(approval.getApprovalResult());
-        applicationRepository.save(application);
-        
-        // 保存审批记录
-        approvalRepository.save(approval);
-        
-        // 构造返回结果
+        boolean success = approvalService.processApproval(approval);
         Map<String, Object> result = new HashMap<>();
-        result.put("success", true);
+        result.put("success", success);
         return result;
     }
 
@@ -99,11 +87,7 @@ public class OAController {
      */
     @GetMapping("/announcements")
     public Map<String, Object> getAnnouncements(@RequestParam(defaultValue = "1") int page) {
-        // 查询当前有效的公告（每页10条记录）
-        Page<Announcement> announcements = announcementRepository.findActiveAnnouncements(
-                PageRequest.of(page - 1, 10));
-        
-        // 构造返回结果
+        Page<Announcement> announcements = announcementService.getActiveAnnouncements(page);
         Map<String, Object> result = new HashMap<>();
         result.put("success", true);
         result.put("data", announcements.getContent());
