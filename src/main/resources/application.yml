@@ -1,17 +1,28 @@
 server:
-  port: 80
-
+  port: 80  # 微信云托管默认使用80端口
+  servlet:
+    context-path: /   # 确保根路径配置正确
 
 spring:
   datasource:
+    # 数据库连接配置
+    url: jdbc:mysql://10.10.101.158:3306/100025554528-ca-ijcspmzz?useSSL=false&serverTimezone=Asia/Shanghai
+    username: ${MYSQL_USERNAME}  # 使用环境变量
+    password: ${MYSQL_PASSWORD}  # 使用环境变量
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_ADDRESS}/${MYSQL_DATABASE:springboot_demo}
-    username: ${MYSQL_USERNAME}
-    password: ${MySQL_PASSWORD}
-  mvc:
-    view:
-      suffix: .html
-      prefix: /
+  jpa:
+    hibernate:
+      # 禁用自动建表
+      ddl-auto: none
+    # 显示SQL语句，方便调试
+    show-sql: true
 
 mybatis:
+  # MyBatis映射文件路径
   mapper-locations: classpath*:mapper/*Mapper.xml
+
+logging:
+  level:
+    root: INFO
+    com.example: DEBUG
+    org.springframework.web: DEBUG

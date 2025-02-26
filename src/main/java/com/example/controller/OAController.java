@@ -1,0 +1,112 @@
+package com.example.controller;
+
+import com.example.entity.*;
+import com.example.repository.*;
+import com.example.model.dto.ApplicationDTO;
+import com.example.service.ApplicationService;
+import com.example.service.ApprovalService;
+import com.example.service.AnnouncementService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * OA系统控制器
+ * 处理申请、审批、公告相关的请求
+ */
+@RestController
+@RequestMapping("/api")
+@CrossOrigin(origins = "*")  // 添加跨域支持
+@RequiredArgsConstructor
+public class OAController {
+    // 使用构造器注入的方式注入所需的Repository
+    private final ApplicationRepository applicationRepository;
+    private final ApprovalRepository approvalRepository;
+    private final AnnouncementRepository announcementRepository;
+    private final ApplicationService applicationService;
+    private final ApprovalService approvalService;
+    private final AnnouncementService announcementService;
+
+    /**
+     * 处理新申请的提交
+     * @param applicationDTO 申请信息
+     * @return 包含申请ID的响应
+     */
+    @PostMapping("/apply")
+    public Map<String, Object> apply(@RequestBody ApplicationDTO applicationDTO) {
+        Long id = applicationService.createApplication(applicationDTO);
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("id", id);
+        return result;
+    }
+
+    /**
+     * 处理审批操作
+     * @param approval 审批信息
+     * @return 审批结果
+     */
+    @PostMapping("/approve")
+    @Transactional  // 使用事务确保数据一致性
+    public Map<String, Object> approve(@RequestBody Approval approval) {
+        // 查找对应的申请记录
+        Application application = applicationRepository.findById(approval.getApplicationId())
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+        
+        // 更新申请状态
+        application.setStatus(approval.getApprovalResult());
+        applicationRepository.save(application);
+        
+        // 保存审批记录
+        approvalRepository.save(approval);
+        
+        // 构造返回结果
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        return result;
+    }
+
+    /**
+     * 分页查询用户的申请列表
+     * @param userId 用户ID
+     * @param page 页码（从1开始）
+     * @return 申请列表数据
+     */
+    @GetMapping("/applications")
+    public Map<String, Object> getApplications(
+            @RequestParam String userId,
+            @RequestParam(defaultValue = "1") int page) {
+        // 创建分页请求（每页10条记录）
+        Page<Application> applications = applicationRepository.findByUserIdOrderByCreateTimeDesc(
+                userId, PageRequest.of(page - 1, 10));
+        
+        // 构造返回结果
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("data", applications.getContent());
+        return result;
+    }
+
+    /**
+     * 分页查询有效的通知公告
+     * @param page 页码（从1开始）
+     * @return 公告列表数据
+     */
+    @GetMapping("/announcements")
+    public Map<String, Object> getAnnouncements(@RequestParam(defaultValue = "1") int page) {
+        // 查询当前有效的公告（每页10条记录）
+        Page<Announcement> announcements = announcementRepository.findActiveAnnouncements(
+                PageRequest.of(page - 1, 10));
+        
+        // 构造返回结果
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("data", announcements.getContent());
+        return result;
+    }
+} 
