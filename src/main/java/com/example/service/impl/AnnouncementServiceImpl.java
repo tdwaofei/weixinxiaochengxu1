@@ -1,21 +1,20 @@
 package com.example.service.impl;
 
 import com.example.entity.Announcement;
-import com.example.repository.AnnouncementRepository;
+import com.example.mapper.AnnouncementMapper;
 import com.example.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AnnouncementServiceImpl implements AnnouncementService {
-    private final AnnouncementRepository announcementRepository;
+    private final AnnouncementMapper announcementMapper;
 
     @Override
-    public Page<Announcement> getActiveAnnouncements(int page) {
-        return announcementRepository.findActiveAnnouncements(
-                PageRequest.of(page - 1, 10));
+    public List<Announcement> getActiveAnnouncements(int page) {
+        int offset = (page - 1) * 10;
+        return announcementMapper.findActiveAnnouncements(offset, 10);
     }
 } 
