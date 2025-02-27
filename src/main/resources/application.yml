@@ -8,7 +8,7 @@ spring:
     # 数据库连接配置
     url: jdbc:mysql://10.10.101.158:3306/100025554528-ca-ijcspmzz?useSSL=false&serverTimezone=Asia/Shanghai
     username: 'appadm'  # 使用环境变量
-    password: 'Unionssky@57850'  # 使用环境变量
+    password: 'Unionsky@57850'  # 使用环境变量
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis:
