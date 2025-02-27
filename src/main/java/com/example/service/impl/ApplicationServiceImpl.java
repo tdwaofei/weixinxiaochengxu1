@@ -25,9 +25,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<ApplicationDTO> getUserApplications(String userId, int page) {
+    public List<ApplicationDTO> getUserApplications(String orgName, int page) {
         int offset = (page - 1) * 10;
-        List<Application> applications = applicationMapper.findByUserId(userId, offset, 10);
+        List<Application> applications = applicationMapper.findByOrgName(orgName, offset, 10);
         return applications.stream().map(app -> {
             ApplicationDTO dto = new ApplicationDTO();
             BeanUtils.copyProperties(app, dto);

@@ -1,9 +1,11 @@
 -- 申请表：存储用户提交的各类申请
 CREATE TABLE applications (
     id INT PRIMARY KEY AUTO_INCREMENT,    -- 主键ID
-    user_id VARCHAR(100) NOT NULL,        -- 申请人ID
-    apply_type VARCHAR(50) NOT NULL,      -- 申请类型
-    apply_content TEXT,                   -- 申请内容
+    org_name VARCHAR(100) NOT NULL COMMENT '机构名称',
+    region VARCHAR(200) NOT NULL COMMENT '地区',
+    contact_name VARCHAR(50) NOT NULL COMMENT '联系人',
+    contact_phone VARCHAR(20) NOT NULL COMMENT '联系电话',
+    files TEXT COMMENT '文件URL列表',
     status VARCHAR(20) DEFAULT 'pending', -- 申请状态（待审批/已通过/已拒绝）
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,  -- 创建时间
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- 更新时间

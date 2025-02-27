@@ -7,19 +7,27 @@ import java.util.List;
 
 @Mapper
 public interface ApplicationMapper {
-    @Insert("INSERT INTO applications(user_id, apply_type, apply_content, status) " +
-            "VALUES(#{userId}, #{applyType}, #{applyContent}, #{status})")
+    @Insert("INSERT INTO applications(org_name, region, contact_name, contact_phone, files, status) " +
+            "VALUES(#{orgName}, #{region}, #{contactName}, #{contactPhone}, #{files,typeHandler=com.example.handler.StringListTypeHandler}, #{status})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Application application);
 
-    @Select("SELECT * FROM applications WHERE user_id = #{userId} " +
-            "ORDER BY create_time DESC LIMIT #{offset}, #{limit}")
-    List<Application> findByUserId(@Param("userId") String userId, 
-                                 @Param("offset") int offset, 
-                                 @Param("limit") int limit);
-
     @Select("SELECT * FROM applications WHERE id = #{id}")
+    @Results({
+        @Result(property = "files", column = "files", 
+                typeHandler = com.example.handler.StringListTypeHandler.class)
+    })
     Application findById(Long id);
+
+    @Select("SELECT * FROM applications WHERE org_name LIKE CONCAT('%',#{orgName},'%') " +
+            "ORDER BY create_time DESC LIMIT #{offset}, #{limit}")
+    @Results({
+        @Result(property = "files", column = "files", 
+                typeHandler = com.example.handler.StringListTypeHandler.class)
+    })
+    List<Application> findByOrgName(@Param("orgName") String orgName, 
+                                  @Param("offset") int offset, 
+                                  @Param("limit") int limit);
 
     @Update("UPDATE applications SET status = #{status} WHERE id = #{id}")
     int updateStatus(@Param("id") Long id, @Param("status") String status);
