@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface ApplicationMapper {
     @Insert("INSERT INTO applications(org_name, region, contact_name, contact_phone, files, status) " +
-            "VALUES(#{orgName}, #{region}, #{contactName}, #{contactPhone}, #{status})")
+            "VALUES(#{orgName}, #{region}, #{contactName}, #{contactPhone}, #{files}, #{status})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Application application);
 
