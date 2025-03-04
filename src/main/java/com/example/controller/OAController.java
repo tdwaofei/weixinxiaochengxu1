@@ -8,6 +8,8 @@ import com.example.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +27,7 @@ public class OAController {
     private final ApplicationService applicationService;
     private final ApprovalService approvalService;
     private final AnnouncementService announcementService;
+    private static final Logger log = LoggerFactory.getLogger(OAController.class);
 
     /**
      * 处理新申请的提交
@@ -33,10 +36,17 @@ public class OAController {
      */
     @PostMapping("/apply")
     public Map<String, Object> apply(@RequestBody ApplicationDTO applicationDTO) {
-        Long id = applicationService.createApplication(applicationDTO);
         Map<String, Object> result = new HashMap<>();
-        result.put("success", true);
-        result.put("id", id);
+        try {
+            Long id = applicationService.createApplication(applicationDTO);
+            result.put("success", true);
+            result.put("id", id);
+        } catch (Exception e) {
+            // 记录异常信息
+            log.error("Error while processing application: ", e);
+            result.put("success", false);
+            result.put("error", e.getMessage());
+        }
         return result;
     }
 

@@ -4,19 +4,14 @@ import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedTypes;
 
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @MappedTypes(List.class)
 public class StringListTypeHandler extends BaseTypeHandler<List<String>> {
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType)
-            throws SQLException {
+    public void setNonNullParameter(PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType) throws SQLException {
         String value = String.join(",", parameter);
         ps.setString(i, value);
     }
