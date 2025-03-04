@@ -6,10 +6,13 @@ server:
 spring:
   datasource:
     # 数据库连接配置
-    url: jdbc:mysql://10.10.101.158:3306/100025554528-ca-ijcspmzz?useSSL=false&serverTimezone=Asia/Shanghai
-    username: 'root'  # 使用环境变量
-    password: 'gz9gkSyy'  # 使用环境变量
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?useSSL=false&serverTimezone=Asia/Shanghai
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
 
 mybatis:
   # MyBatis映射文件路径
