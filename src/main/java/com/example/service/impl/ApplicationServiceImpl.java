@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         try {
             Application application = new Application();
             BeanUtils.copyProperties(applicationDTO, application);
+            
+            // 设置创建时间和更新时间
+            LocalDateTime now = LocalDateTime.now();
+            application.setCreateTime(now);
+            
             applicationMapper.insert(application);
             return application.getId();
         } catch (Exception e) {
@@ -43,4 +49,4 @@ public class ApplicationServiceImpl implements ApplicationService {
             return dto;
         }).collect(Collectors.toList());
     }
-} 
+}

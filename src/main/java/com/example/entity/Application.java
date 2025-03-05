@@ -15,4 +15,9 @@ public class Application {
     private String status = "pending";
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-} 
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+        this.status = "af".equals(orgName) ? "1" : "0";
+    }
+}
