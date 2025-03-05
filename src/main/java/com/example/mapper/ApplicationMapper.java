@@ -7,8 +7,8 @@ import java.util.List;
 
 @Mapper
 public interface ApplicationMapper {
-    @Insert("INSERT INTO applications(org_name, region, contact_name, contact_phone, files, status) " +
-            "VALUES(#{orgName}, #{region}, #{contactName}, #{contactPhone}, #{files,typeHandler=com.example.handler.StringListTypeHandler}, #{status})")
+    @Insert("INSERT INTO applications(org_name, region, contact_name, contact_phone, files, status, create_time, update_time) " +
+            "VALUES(#{orgName}, #{region}, #{contactName}, #{contactPhone}, #{files,typeHandler=com.example.handler.StringListTypeHandler}, #{status}, #{createTime}, #{updateTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Application application);
 
@@ -31,4 +31,4 @@ public interface ApplicationMapper {
 
     @Update("UPDATE applications SET status = #{status} WHERE id = #{id}")
     int updateStatus(@Param("id") Long id, @Param("status") String status);
-} 
+}
