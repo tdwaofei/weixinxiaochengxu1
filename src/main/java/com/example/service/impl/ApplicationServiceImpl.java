@@ -29,6 +29,10 @@ public class ApplicationServiceImpl implements ApplicationService {
             // 设置创建时间和更新时间
             LocalDateTime now = LocalDateTime.now();
             application.setCreateTime(now);
+            //application.setUpdateTime(now);
+            
+            // 设置状态：如果orgName为af则设置为1，否则为0
+            application.setStatus(applicationDTO.getOrgName().equals("af") ? 1 : 0);
             
             applicationMapper.insert(application);
             return application.getId();

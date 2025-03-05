@@ -12,12 +12,8 @@ public class Application {
     private String contactName;    // 联系人
     private String contactPhone;   // 联系电话
     private List<String> files;    // 文件URL列表
-    private String status = "pending";
+    private int status = 0;   //默认为0
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
-        this.status = "af".equals(orgName) ? "1" : "0";
-    }
 }
